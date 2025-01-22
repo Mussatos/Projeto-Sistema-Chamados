@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { Link } from "react-router-dom";
 import logo from '../../assets/logo.png';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from "../../services/firebaseConnection";
+import { AuthContext } from "../../contexts/auth";
+import { toast } from "react-toastify";
 
 export default function SignUp() {
 
@@ -10,19 +10,16 @@ export default function SignUp() {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
 
+    const { signUp, loadingAuth } = useContext(AuthContext);
+
     async function cadastrarUsuario(e) {
         e.preventDefault();
-
-        if(name !== '' && email !== '' && password !== ''){
-
+        if (name !== '' && email !== '' && password !== '') {
+            await signUp(name, email, password);
         }
-        await createUserWithEmailAndPassword(auth, email, password)
-        .then(()=>{
-
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
+        else{
+            toast.error('Preencha todos os campos!')
+        }
     }
 
     return (
@@ -49,10 +46,16 @@ export default function SignUp() {
                         placeholder="******" value={password}
                         onChange={(e) => setPassword(e.target.value)} />
 
-                    <button type="submit">Cadastrar</button>
+                    <button type="submit">
+                        {
+                            loadingAuth ? 'Carregando...'
+                                : 'Cadastrar'
+                        }
+                    </button>
+
 
                 </form>
-                    <Link to='/'>Já possui uma conta? Faça login</Link>
+                <Link to='/'>Já possui uma conta? Faça login</Link>
             </div>
         </div>
     )

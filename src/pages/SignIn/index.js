@@ -1,26 +1,27 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { Link } from "react-router-dom";
 import './signin.css';
 import logo from '../../assets/logo.png';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from "../../services/firebaseConnection";
+import { AuthContext } from '../../contexts/auth';
+import { toast } from "react-toastify";
 
 export default function SignIn() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const { signIn, loadingAuth } = useContext(AuthContext);
+
     async function logarUsuario(e) {
         e.preventDefault();
-        await signInWithEmailAndPassword(auth, email, password)
-        .then(()=>{
-
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
+        if (email !== '' && password !== '') {
+            await signIn(email, password);
+        }
+        else{
+            toast.error('Preencha todos os campos!')
+        }
     }
-    
+
     return (
         <div className="container-center">
             <div className="login">
@@ -40,10 +41,15 @@ export default function SignIn() {
                         placeholder="******" value={password}
                         onChange={(e) => setPassword(e.target.value)} />
 
-                    <button type="submit">Acessar</button>
+                    <button type="submit">
+                        {
+                            loadingAuth ? 'Carregando...'
+                            : 'Acessar'
+                        }
+                    </button>
 
                 </form>
-                    <Link to='/register'>Criar uma conta</Link>
+                <Link to='/register'>Criar uma conta</Link>
             </div>
         </div>
     )

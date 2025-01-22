@@ -1,11 +1,11 @@
-import './dashboard.css'
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/auth'
 import Header from '../../components/Header';
 import Title from '../../components/Title';
-import { FiCloud } from 'react-icons/fi';
+import { FiUser } from 'react-icons/fi';
 
-export default function Dashboard() {
+
+export default function Costumers() {
 
     const { logout } = useContext(AuthContext);
 
@@ -17,9 +17,10 @@ export default function Dashboard() {
         <div>
             <Header />
             <div className='content'>
-                <Title name='Atendimentos'>
-                    <FiCloud size={25}/>
+                <Title name='Usuários'>
+                    <FiUser size={25} />
                 </Title>
+                
             </div>
 
             <button onClick={sairLogin}>Sair da conta</button>
