@@ -1,11 +1,18 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/auth'
+
 import Header from '../../components/Header';
 import Title from '../../components/Title';
+
 import './profile.css';
+
 import { FiSettings, FiUpload } from 'react-icons/fi';
 import avatar from '../../assets/avatar.png'
 
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../services/firebaseConnection';
+
+import { toast } from 'react-toastify'
 
 export default function Profile() {
 
@@ -30,7 +37,50 @@ export default function Profile() {
                 return;
             }
         }
+    }
 
+
+    async function enviarInfos(e){
+        e.preventDefault();
+        
+        if(imageAvatar === null && nomeUser !== ''){
+            //Atualizar apenas o nome
+            const docRef = doc(db, 'users', user.uid)
+            await updateDoc(docRef,{
+                nome: nomeUser
+           }) 
+           .then(()=>{
+                let data = {
+                    ...user, 
+                    nome: nomeUser
+                }
+                setUser(data);
+                storageUser(data);
+                toast.success("Atualizado com sucesso!");
+           })
+           .catch((err)=>{
+                toast.error('Algo deu errado com a troca do nome!');
+           })
+        }else if(imageAvatar !== null && nomeUser !== ''){
+            //Atualizar as duas informações
+            const docRef = doc(db, 'users', user.uid)
+            await updateDoc(docRef, {
+                nome: nomeUser
+            })
+            .then(()=>{
+                let data = {
+                    ...user,
+                    nome: nomeUser,
+                    avatarUrl: null //Não tem como mudar a foto porque o firebase está cobrando pelo serviço de Storage
+                }
+                setUser(data)
+                storageUser(data)
+                toast.success("Atualizado com sucesso!");
+            })
+            .catch((err) => {
+                toast.error("Algo deu errado com a troca das informações!");
+            })
+        }
     }
 
     return (
@@ -41,7 +91,7 @@ export default function Profile() {
                     <FiSettings size={25} />
                 </Title>
                 <div className='container'>
-                    <form className='form-profile'>
+                    <form className='form-profile' onSubmit={enviarInfos}>
                         <label className='label-avatar'>
                             <span>
                                 <FiUpload color='#FFF' size={25} />
