@@ -9,12 +9,28 @@ import avatar from '../../assets/avatar.png'
 
 export default function Profile() {
 
-    const { logout, user } = useContext(AuthContext);
+    const { logout, user, storageUser, setUser } = useContext(AuthContext);
 
     const [avatarUrl, setAvatarUrl] = useState(user && user.avatarUrl);
+    const [imageAvatar, setImageAvatar] = useState(null);
 
-    async function sairLogin() {
-        await logout();
+    const [nomeUser, setNomeUser] = useState(user && user.nome);
+    const [emailUser, setEmailUser] = useState(user && user.email);
+
+    function trocarFoto(e) {
+        if (e.target.files[0]) {
+            const image = e.target.files[0]
+
+            if (image.type === 'image/jpeg' || image.type === 'image.png') {
+                setImageAvatar(image);
+                setAvatarUrl(URL.createObjectURL(image))
+            }else{
+                alert('envie uma imagem do tipo PNG ou JPEG')
+                setImageAvatar(null)
+                return;
+            }
+        }
+
     }
 
     return (
@@ -31,7 +47,7 @@ export default function Profile() {
                                 <FiUpload color='#FFF' size={25} />
                             </span>
 
-                            <input type='file' accept='image/*' /> <br />
+                            <input type='file' accept='image/*' onChange={trocarFoto} /> <br />
                             {
                                 avatarUrl === null ? (
                                     <img src={avatar} alt='foto de perfil' width={250} height={250} />
@@ -43,15 +59,24 @@ export default function Profile() {
                         </label>
 
                         <label>Nome</label>
-                        <input type='text' placeholder='seu nome'/>
+                        <input type='text'
+                            value={nomeUser}
+                            onChange={(e) => setNomeUser(e.target.value)} />
 
                         <label>Email</label>
-                        <input type='text' placeholder='teste@teste.com' disabled={true}/>
+                        <input type='text'
+                            disabled={true}
+                            value={emailUser} />
+
+                        <button type='submit'>Salvar</button>
                     </form>
+
+                </div>
+                <div className='container'>
+                    <button className='logout-btn' onClick={() => logout()}>Sair</button>
                 </div>
             </div>
 
-            <button onClick={sairLogin}>Sair da conta</button>
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, db } from "../services/firebaseConnection";
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 import { toast } from 'react-toastify'
 
@@ -112,7 +112,9 @@ function AuthProvider({ children }) {
                 signUp,
                 logout,
                 loadingAuth,
-                loading
+                loading,
+                storageUser,
+                setUser
             }}>
             {children}
         </AuthContext.Provider>
