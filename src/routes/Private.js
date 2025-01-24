@@ -10,7 +10,6 @@ export default function Private({ children }){
     if(loading){
         return(
             <div>
-
             </div>
         )
     }

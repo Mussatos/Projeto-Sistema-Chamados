@@ -5,6 +5,7 @@ import SignUp from "../pages/SignUp"
 import Dashboard from '../pages/Dashboard';
 import Costumers from '../pages/Costumers';
 import Profile from '../pages/Profile';
+import New from '../pages/New';
 
 import Private from './Private'; 
 
@@ -18,6 +19,7 @@ function RoutesApp(){
             <Route path='/dashboard' element={ <Private> <Dashboard/> </Private> }/>
             <Route path='/costumers' element={ <Private> <Costumers /> </Private> }/>
             <Route path='/profile' element={ <Private> <Profile /> </Private> }/>
+            <Route path='/new' element={ <Private> <New /> </Private> }/>
         </Routes>
     )
 }

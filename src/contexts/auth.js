@@ -93,6 +93,7 @@ function AuthProvider({ children }) {
 
     }
 
+
     function storageUser(data) {
         localStorage.setItem('@ticketsPRO', JSON.stringify(data))
     }
@@ -115,6 +116,7 @@ function AuthProvider({ children }) {
                 loading,
                 storageUser,
                 setUser
+                
             }}>
             {children}
         </AuthContext.Provider>
