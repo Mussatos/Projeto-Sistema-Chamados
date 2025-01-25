@@ -3,7 +3,7 @@ import Header from '../../components/Header';
 import Title from '../../components/Title';
 import { toast } from 'react-toastify';
 import { db } from '../../services/firebaseConnection';
-import { addDoc, collection, getDocs, getDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { FiPlusCircle } from 'react-icons/fi';
 import './new.css';
 import {AuthContext} from '../../contexts/auth';
