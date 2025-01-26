@@ -27,6 +27,8 @@
 
 - Editar um chamado
 
+- Concluir chamado (envia para o histórico)
+
 
 ## Available Scripts
 
