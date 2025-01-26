@@ -130,6 +130,7 @@ export default function New() {
                 toast.success("Chamado registrado!");
                 setComplemento('');
                 setCustomerSelected(0);
+                navigate('/dashboard');
             })
             .catch((err) => {
                 toast.error("Ops erro ao registrar, tente mais tarde!");

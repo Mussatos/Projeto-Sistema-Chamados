@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/auth';
 import { Link } from 'react-router-dom'
 import avatarImg from '../../assets/avatar.png'
-import { FiHome, FiUser, FiSettings } from 'react-icons/fi'
+import { FiHome, FiUser, FiSettings, FiList } from 'react-icons/fi'
 
 import './header.css'
 
@@ -27,10 +27,17 @@ export default function Header(){
                 Clientes
             </Link>
 
+            <Link to='/history'>
+                <FiList color='#FFF' size={24}/>
+                Histórico de chamados
+            </Link>
+
             <Link to='/profile'>
                 <FiSettings color='#FFF' size={24}/>
                 Perfil
             </Link>
+
+
         </div>
     );
 }

@@ -1,7 +1,6 @@
-import './dashboard.css'
 import Header from '../../components/Header';
 import Title from '../../components/Title';
-import { FiPlus, FiMessageCircle, FiSearch, FiEdit2, FiX } from 'react-icons/fi';
+import { FiPlus, FiMessageCircle, FiSearch, FiList } from 'react-icons/fi';
 import { Link } from 'react-router-dom'
 import { collection, getDocs, orderBy, limit, startAfter, query, deleteDoc, doc, addDoc } from 'firebase/firestore';
 import { db } from '../../services/firebaseConnection';
@@ -9,10 +8,9 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import Modal from '../../components/Modal';
 
+const docRef = collection(db, 'historico');
 
-const docRef = collection(db, 'chamados');
-
-export default function Dashboard() {
+export default function Historico() {
 
     const [chamados, setChamados] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -26,12 +24,12 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function loadChamados() {
-            const q = query(docRef, orderBy('dataCriacao', 'desc'), limit(5));
+            const q = query(docRef, orderBy('dataConclusao', 'desc'), limit(5));
 
             const querySnapshot = await getDocs(q);
-            setChamados([]) //Para evitar duplicidade do useEffect rodar 2x -> Retirar o 'React.StrictMode' 
-            // do index.js ou zerar o vetor setChamados antes de atualizar
-            await atualizarEstado(querySnapshot); //Bom relembrar que o StrictMode nao roda em prod, apenas em ambiente de desenvolvimento
+            setChamados([])
+
+            await atualizarEstado(querySnapshot);
 
             setLoading(false);
 
@@ -50,11 +48,11 @@ export default function Dashboard() {
             querySnapshot.forEach((doc) => {
                 lista.push({
                     id: doc.id,
-                    nomeCliente: doc.data().cliente,
+                    nomeCliente: doc.data().nomeCliente,
                     assunto: doc.data().assunto,
                     status: doc.data().status,
-                    dataFormatada: format(doc.data().dataCriacao.toDate(), 'dd/MM/yyyy'),
-                    dataCriacao: doc.data().dataCriacao.toDate(),
+                    dataFormatada: format(doc.data().dataConclusao.toDate(), 'dd/MM/yyyy'),
+                    dataConclusao: doc.data().dataConclusao.toDate(),
                     clientId: doc.data().clienteId,
                     complemento: doc.data().complemento
                 })
@@ -75,36 +73,10 @@ export default function Dashboard() {
     async function maisChamados() {
         setLoadingMore(true)
 
-        const q = query(docRef, orderBy('dataCriacao', 'desc'), startAfter(ultimoDoc), limit(5));
+        const q = query(docRef, orderBy('dataConclusao', 'desc'), startAfter(ultimoDoc), limit(5));
 
         const querySnapshot = await getDocs(q);
         await atualizarEstado(querySnapshot);
-    }
-
-    function openModal(item) {
-        setModalIsOpen(!modalIsOpen);
-        setDetailClient(item);
-    }
-
-    async function concluirChamado(id, nomeCliente, assunto, complemento, clienteId) {
-        const docRef = doc(db, 'chamados', id);
-        try {
-            await addDoc(collection(db, 'historico'), {
-                dataConclusao: new Date(),
-                id: id,
-                status: 'Fechado',
-                assunto: assunto,
-                complemento: complemento,
-                nomeCliente: nomeCliente,
-                clienteId: clienteId
-            })
-            await deleteDoc(docRef);
-            window.location.reload();
-        }
-        catch(error){
-            console.log(error);
-        }
-        
     }
 
     if (loading) {
@@ -127,15 +99,20 @@ export default function Dashboard() {
         )
     }
 
+    function openModal(item) {
+        setModalIsOpen(!modalIsOpen);
+        setDetailClient(item);
+    }
+
     return (
         <div>
             <Header />
             <div className='content'>
-                <Title name='Atendimentos'>
-                    <FiMessageCircle size={25} />
+                <Title name='Histórico'>
+                    <FiList size={25} />
                 </Title>
 
-                <> {/* Fragment > é igual um div, porem não tem estilização */}
+                <>
                     {
                         chamados.length === 0 ? (
                             <div className='container dashboard'>
@@ -148,11 +125,6 @@ export default function Dashboard() {
                             </div>
                         ) : (
                             <>
-                                <Link className='new' to='/new'>
-                                    <FiPlus color='#FFF' size={25} />
-                                    Novo chamado
-                                </Link>
-
                                 <table>
                                     <thead>
                                         <tr>
@@ -160,8 +132,9 @@ export default function Dashboard() {
                                             <th scope='col'>Cliente</th>
                                             <th scope='col'>Assunto</th>
                                             <th scope='col'>Status</th>
-                                            <th scope='col'>Cadastrado em</th>
+                                            <th scope='col'>Finalizado em</th>
                                             <th scope='col'>#</th>
+
 
                                         </tr>
                                     </thead>
@@ -173,33 +146,20 @@ export default function Dashboard() {
                                                     <td data-label="Assunto">{item.assunto}</td>
                                                     <td data-label="Status">
 
-                                                        <span className='badge' style={{ backgroundColor: item.status === 'Aberto' ? '#83bf02' : '#999' }}>
-                                                            {item.status}
+                                                        <span className='badge' style={{ backgroundColor: '#999' }}>
+                                                            Fechado
                                                         </span>
 
                                                     </td>
 
                                                     <td data-label="Cadastrado">{item.dataFormatada}</td>
 
-
                                                     <td data-label="#">
 
                                                         <button className='action'
                                                             style={{ backgroundColor: '#3583f6' }}
                                                             onClick={() => openModal(item)}>
-                                                            <FiSearch color='#FFF' size={17}>
-
-                                                            </FiSearch>
-                                                        </button>
-                                                        <Link to={`/new/${item.id}`} className='action' style={{ backgroundColor: '#f6a935' }}>
-                                                            <FiEdit2 color='#FFF' size={17} />
-                                                        </Link>
-
-                                                        <button className='action'
-                                                            onClick={() => concluirChamado(item.id, item.nomeCliente, 
-                                                                item.assunto, item.complemento, item.clientId)}
-                                                            style={{ backgroundColor: '#f65835' }}>
-                                                            <FiX color='#FFF' size={17} />
+                                                            <FiSearch color='#FFF' size={17} />
                                                         </button>
                                                     </td>
 
@@ -222,7 +182,6 @@ export default function Dashboard() {
                     }
                 </>
             </div>
-
             {
                 modalIsOpen && (
                     <Modal
@@ -232,5 +191,5 @@ export default function Dashboard() {
                 )
             }
         </div>
-    )
+    );
 }
