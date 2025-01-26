@@ -8,11 +8,11 @@
 
 - Cadastrar empresa;
 
- -- Nome fantasia;
+  -- Nome fantasia;
 
- -- CNPJ;
+  -- CNPJ;
 
- -- Endereço.
+  -- Endereço.
 
 
 - Cadastrar um chamado, seja ele de suporte, financeiro ou visita técnica;
