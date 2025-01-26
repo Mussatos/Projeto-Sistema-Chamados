@@ -25,7 +25,7 @@
 
   -- Complemento: falar sobre o probrema.
 
-- Editar um chamado;
+- Editar um chamado.
 
 
 ## Available Scripts
