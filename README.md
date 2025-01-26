@@ -7,14 +7,22 @@
 - Editar o próprio perfil;
 
 - Cadastrar empresa;
+
  -- Nome fantasia;
+
  -- CNPJ;
+
  -- Endereço.
 
+
 - Cadastrar um chamado, seja ele de suporte, financeiro ou visita técnica;
+
   -- Selecionar a empresa (cadastrada) que deseja fazer o chamado;
+
   -- Assunto: suporte, financeiro ou visita técnica;
+
   -- Status: em aberto, progresso ou atendido;
+
   -- Complemento: falar sobre o probrema.
 
 - Editar um chamado;
