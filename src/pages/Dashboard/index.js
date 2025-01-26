@@ -7,6 +7,8 @@ import { collection, getDocs, orderBy, limit, startAfter, query, getDoc } from '
 import { db } from '../../services/firebaseConnection';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
+import Modal from '../../components/Modal';
+
 
 const docRef = collection(db, 'chamados');
 
@@ -16,8 +18,11 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
 
     const [listaVazia, setListaVazia] = useState(false);
-    const [ultimoDoc, setUltimoDoc] = useState()
-    const [loadingMore, setLoadingMore] = useState(true)
+    const [ultimoDoc, setUltimoDoc] = useState();
+    const [loadingMore, setLoadingMore] = useState(true);
+
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [detailClient, setDetailClient] = useState();
 
     useEffect(() => {
         async function loadChamados() {
@@ -60,8 +65,6 @@ export default function Dashboard() {
             setChamados(chamados => [...chamados, ...lista])
             setUltimoDoc(lastDoc);
 
-
-
         } else {
             setListaVazia(true);
         }
@@ -77,6 +80,12 @@ export default function Dashboard() {
         const querySnapshot = await getDocs(q);
         await atualizarEstado(querySnapshot);
     }
+
+    function openModal(item){
+        setModalIsOpen(!modalIsOpen);
+        setDetailClient(item);
+    }
+
 
     if (loading) {
         return (
@@ -155,14 +164,16 @@ export default function Dashboard() {
 
                                                     <td data-label="#">
 
-                                                        <button className='action' style={{ backgroundColor: '#3583f6' }}>
+                                                        <button className='action' 
+                                                        style={{ backgroundColor: '#3583f6' }} 
+                                                        onClick={() => openModal(item)}>
                                                             <FiSearch color='#FFF' size={17}>
 
                                                             </FiSearch>
                                                         </button>
-                                                        <button className='action' style={{ backgroundColor: '#f6a935' }}>
+                                                        <Link to={`/new/${item.id}`} className='action' style={{ backgroundColor: '#f6a935' }}>
                                                             <FiEdit2 color='#FFF' size={17} />
-                                                        </button>
+                                                        </Link>
                                                     </td>
 
                                                 </tr>
@@ -171,7 +182,6 @@ export default function Dashboard() {
                                         }
                                     </tbody>
                                 </table>
-
 
                                 {
                                     loadingMore && <h3 className='h3-more'>Buscando mais chamados...</h3>
@@ -185,6 +195,15 @@ export default function Dashboard() {
                     }
                 </>
             </div>
+
+            {
+                modalIsOpen && (
+                    <Modal 
+                        conteudo={detailClient}
+                        close={ () => setModalIsOpen(!modalIsOpen) }
+                    />
+                )
+            }
         </div>
     )
 }

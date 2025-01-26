@@ -7,7 +7,9 @@ import Costumers from '../pages/Costumers';
 import Profile from '../pages/Profile';
 import New from '../pages/New';
 
+
 import Private from './Private'; 
+
 
 
 function RoutesApp(){
@@ -20,6 +22,7 @@ function RoutesApp(){
             <Route path='/costumers' element={ <Private> <Costumers /> </Private> }/>
             <Route path='/profile' element={ <Private> <Profile /> </Private> }/>
             <Route path='/new' element={ <Private> <New /> </Private> }/>
+            <Route path='new/:id' element={ <Private> <New /> </Private> }/>
         </Routes>
     )
 }
