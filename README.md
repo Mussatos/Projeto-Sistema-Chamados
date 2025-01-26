@@ -2,11 +2,11 @@
 
 # Funcionalidades
 
-- Registrar e Logar;
+- Registrar e Logar
 
-- Editar o próprio perfil;
+- Editar o próprio perfil
 
-- Cadastrar empresa;
+- Cadastrar empresa
 
   -- Nome fantasia;
 
@@ -15,7 +15,7 @@
   -- Endereço.
 
 
-- Cadastrar um chamado, seja ele de suporte, financeiro ou visita técnica;
+- Cadastrar um chamado, seja ele de suporte, financeiro ou visita técnica
 
   -- Selecionar a empresa (cadastrada) que deseja fazer o chamado;
 
@@ -25,7 +25,7 @@
 
   -- Complemento: falar sobre o probrema.
 
-- Editar um chamado.
+- Editar um chamado
 
 
 ## Available Scripts
